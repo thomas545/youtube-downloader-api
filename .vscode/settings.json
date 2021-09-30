@@ -1,0 +1,19 @@
+// Place your settings in this file to overwrite default and user settings..
+
+{
+    "editor.rulers": [
+        80,
+        100
+    ],
+    "python.pythonPath": "/home/thomas/Desktop/general_env/bin/python3",
+    "python.autoComplete.extraPaths": [
+        "/home/thomas/Desktop/general_env/bin/lib"
+    ],
+    "editor.fontSize": 14,
+    "python.languageServer": "Pylance",
+    "python.formatting.provider": "black",
+    "window.zoomLevel": 0.5,
+    "python.analysis.extraPaths": [
+        "/home/thomas/Desktop/general_env/bin/lib"
+    ],
+}
