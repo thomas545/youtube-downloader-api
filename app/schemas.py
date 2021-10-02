@@ -12,3 +12,8 @@ class PlaylistVideoSchema(BaseModel):
     save_path: str
     playlist_url: str
     quality: Optional[str] = "144p"
+
+class ChannelVideoSchema(BaseModel):
+    save_path: str
+    channel_url: str
+    quality: Optional[str] = "144p"
