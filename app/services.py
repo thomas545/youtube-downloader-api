@@ -62,7 +62,7 @@ def youtube_download_playlist(playlist_url, output_path, quality="360p"):
     failed_videos_url = []
     counter = 1
 
-    for url in pl.video_urls[:1]:
+    for url in pl.video_urls:
         try:
             yt = YouTube(url)
         except VideoUnavailable:
