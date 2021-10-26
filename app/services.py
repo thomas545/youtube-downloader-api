@@ -33,7 +33,7 @@ def check_quality(quality):
         raise HTTPException("your quality not supported.")
 
 
-def youtube_download_single_video(url, output_path, quality="360p"):
+def youtube_download_single_video(url, output_path, quality="360p", types="video"):
     check_quality(quality)
 
     try:
@@ -41,11 +41,14 @@ def youtube_download_single_video(url, output_path, quality="360p"):
     except VideoUnavailable:
         raise HTTPException(status_code=400, detail="Video URL invalid.")
     else:
-        stream = yt.streams.filter(res=quality, progressive=progressive(quality))
-        # stream.first().download(output_path=output_path)
-        file_name, ext = stream.first().default_filename.split(".")
+        streams = yt.streams
+        if types == "video":
+            stream = streams.filter(res=quality, progressive=progressive(quality)).first()
+        else:
+            stream = streams.get_by_itag(251)
+
         threading.Thread(
-            target=stream.first().download,
+            target=stream.download,
             kwargs={
                 "output_path": output_path,
             },
@@ -55,7 +58,7 @@ def youtube_download_single_video(url, output_path, quality="360p"):
     return True
 
 
-def youtube_download_playlist(playlist_url, output_path, quality="360p"):
+def youtube_download_playlist(playlist_url, output_path, quality="360p", types="video"):
     check_quality(quality=quality)
 
     pl = Playlist(playlist_url)
@@ -68,15 +71,16 @@ def youtube_download_playlist(playlist_url, output_path, quality="360p"):
         except VideoUnavailable:
             failed_videos_url.append(url)
         else:
-            stream = yt.streams.filter(res=quality, progressive=progressive(quality))
+            streams = yt.streams
             file_name, ext = stream.first().default_filename.split(".")
-            # stream.first().download(
-            #     output_path=output_path,
-            #     filename=f"{file_name}_{counter}",
-            # )
+
+        if types == "video":
+            stream = streams.filter(res=quality, progressive=progressive(quality)).first()
+        else:
+            stream = streams.get_by_itag(251)
 
             threading.Thread(
-                target=stream.first().download,
+                target=stream.download,
                 kwargs={
                     "output_path": output_path,
                     "filename": f"{file_name}_{counter}",
@@ -92,7 +96,7 @@ def youtube_download_playlist(playlist_url, output_path, quality="360p"):
     return True
 
 
-def youtube_download_channel_videos(channel_url, output_path, quality="360p"):
+def youtube_download_channel_videos(channel_url, output_path, quality="360p", types="video"):
     check_quality(quality=quality)
 
     channel = Channel(channel_url)
@@ -104,10 +108,14 @@ def youtube_download_channel_videos(channel_url, output_path, quality="360p"):
         except VideoUnavailable:
             failed_videos_url.append(url)
         else:
-            stream = yt.streams.filter(res=quality, progressive=progressive(quality))
-            # stream.first().download(output_path=output_path)
+            streams = yt.streams
+
+            if types == "video":
+                stream = streams.filter(res=quality, progressive=progressive(quality)).first()
+            else:
+                stream = streams.get_by_itag(251)
             threading.Thread(
-                target=stream.first().download,
+                target=stream.download,
                 kwargs={
                     "output_path": output_path,
                 },
